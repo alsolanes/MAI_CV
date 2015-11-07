@@ -89,3 +89,29 @@ figure; set(gcf, 'name', '3. 10 times filter 1x5 filter');
 imshow(im3);
 figure; set(gcf, 'name', '4. 10 times filter 5x5 filter');
 imshow(im4);
+
+%% d: Apply a median filter (by the use of medfilt2(A, [m, n])
+% the output of medfilt2 is the median filtering, where each output pixel
+% is the median value of the m-by-n neighbourhood around the corresponding
+% pixel in the image
+size = 3;
+filter_median_r = medfilt2(image(:,:,1), [size size]);
+filter_median_g = medfilt2(image(:,:,2), [size size]);
+filter_median_b = medfilt2(image(:,:,3), [size size]);
+img_median = cat(3, filter_median_r, filter_median_g, filter_median_b);
+figure, set(gcf,'name','Median filter 3x3');
+imshow(img_median);
+size = 5;
+filter_median_r = medfilt2(image(:,:,1), [size size]);
+filter_median_g = medfilt2(image(:,:,2), [size size]);
+filter_median_b = medfilt2(image(:,:,3), [size size]);
+img_median = cat(3, filter_median_r, filter_median_g, filter_median_b);
+figure, set(gcf,'name','Median filter 5x5');
+imshow(img_median);
+size = 7;
+filter_median_r = medfilt2(image(:,:,1), [size size]);
+filter_median_g = medfilt2(image(:,:,2), [size size]);
+filter_median_b = medfilt2(image(:,:,3), [size size]);
+img_median = cat(3, filter_median_r, filter_median_g, filter_median_b);
+figure, set(gcf,'name','Median filter 7x7');
+imshow(img_median);
