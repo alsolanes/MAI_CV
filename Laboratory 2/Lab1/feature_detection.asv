@@ -6,6 +6,7 @@
 %% Lab1: Feature detection
 I = vl_impattern('roofs1');
 I = single(rgb2gray(I));
+%figure, imshow(gradient(I));
 figure, imshow(I);
 [f,d] = vl_sift(I);
 
@@ -40,18 +41,31 @@ figure, imshow(I);
 % view the descriptors
 figure, show_keypoints(I,f);
 
-% Testing the SIFT detector
+% selective view of descriptors. 50 random points
+figure, show_keypoints(I, random_selection(f, 50));
+
+%% Testing the SIFT detector
+[f,d] = vl_sift(I,'PeakThresh', 0.005);
+figure 
+subplot(2,3,1), show_keypoints(I,f);
+title('Peak threshold: 0.005')
+
 [f,d] = vl_sift(I,'PeakThresh', 0.01);
-figure, show_keypoints(I,f);
+subplot(2,3,2), show_keypoints(I,f);
+title('Peak threshold: 0.01')
 
 [f,d] = vl_sift(I,'PeakThresh', 0.03);
-figure, show_keypoints(I,f);
+subplot(2,3,3), show_keypoints(I,f);
+title('Peak threshold: 0.03')
 
 [f,d] = vl_sift(I,'PeakThresh', 0.05);
-figure, show_keypoints(I,f);
+subplot(2,3,4), show_keypoints(I,f);
+title('Peak threshold: 0.05')
 
 [f,d] = vl_sift(I,'PeakThresh', 0.08);
-figure, show_keypoints(I,f);
+subplot(2,3,5), show_keypoints(I,f);
+title('Peak threshold: 0.08')
 
-[f,d] = vl_sift(I,'PeakThresh', 0.005);
-figure, show_keypoints(I,f);
+[f,d] = vl_sift(I,'PeakThresh', 0.1);
+subplot(2,3,6), show_keypoints(I,f);
+title('Peak threshold: 0.1')
