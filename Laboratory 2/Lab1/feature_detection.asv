@@ -40,9 +40,7 @@ figure, imshow(I);
 % view the descriptors
 figure, show_keypoints(I,f);
 
-% selective view of descriptors. 50 random points
-figure, show_keypoints(I, random_selection(f, 50));
-%% Testing the SIFT detector
+% Testing the SIFT detector
 [f,d] = vl_sift(I,'PeakThresh', 0.01);
 figure, show_keypoints(I,f);
 
