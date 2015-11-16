@@ -1,0 +1,7 @@
+Students: Pablo Martínez and Aleix Solanes
+Course: Computer Vision
+SIFT
+
+In Lab1 there is the code related to the first SIFT session. Feature detection. The file is feature_detection.m.
+In Lab2 there is the code related to the second SIFT session. Feature Matching and panorama creation. 
+The files are feature_matching.m, panoramaRANSAC.m and ransac.m.
