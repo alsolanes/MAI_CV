@@ -1,0 +1,178 @@
+load('mnist_all.mat');
+
+bestCM = [];
+bestAcc = [];
+myoptions = statset('Display','off','MaxIter',120000);
+
+for numInstances=[100 500]
+    X = getXTrain(numInstances,train0,train1,train2,train3,train4,train5,train6,train7,train8,train9);
+
+    cmC = [];
+    accC = [];
+    C=[0.01 0.1 1 2 4];
+    for c=C
+        accuracy = [];
+        ConfusionMatrix = [];
+        for number=0:9
+            y = zeros(10,1);
+            y(number+1) = 1;
+            Y = kron(y,ones(numInstances,1));
+            Y = double(Y);
+            
+            SVMStruct = svmtrain(X,Y,'boxconstraint',c,'options',myoptions);
+
+            XTest = [test0;test1;test2;test3;test4;test5;test6;test7;test8;test9];
+            XTest = double(XTest);
+
+            size0 = size(test0,1);
+            size1 = size(test1,1)+size0;
+            size2 = size(test2,1)+size1;
+            size3 = size(test3,1)+size2;
+            size4 = size(test4,1)+size3;
+            size5 = size(test5,1)+size4;
+            size6 = size(test6,1)+size5;
+            size7 = size(test7,1)+size6;
+            size8 = size(test8,1)+size7;
+            size9 = size(test9,1)+size8;
+
+            predicted = svmclassify(SVMStruct, XTest, 'ShowPlot', true);
+
+            pred0 = sum(predicted(1:size0));
+            pred1 = sum(predicted(size0+1:size1));
+            pred2 = sum(predicted(size1+1:size2));
+            pred3 = sum(predicted(size2+1:size3));
+            pred4 = sum(predicted(size3+1:size4));
+            pred5 = sum(predicted(size4+1:size5));
+            pred6 = sum(predicted(size5+1:size6));
+            pred7 = sum(predicted(size6+1:size7));
+            pred8 = sum(predicted(size7+1:size8));
+            pred9 = sum(predicted(size8+1:size9));
+
+            pred = [pred0,pred1,pred2,pred3,pred4,pred5,pred6,pred7,pred8,pred9];
+            ConfusionMatrix = [ConfusionMatrix; pred];
+
+            predicted = (predicted-1)*-1;
+
+            pred0N = sum(predicted(1:size0));
+            pred1N = sum(predicted(size0+1:size1));
+            pred2N = sum(predicted(size1+1:size2));
+            pred3N = sum(predicted(size2+1:size3));
+            pred4N = sum(predicted(size3+1:size4));
+            pred5N = sum(predicted(size4+1:size5));
+            pred6N = sum(predicted(size5+1:size6));
+            pred7N = sum(predicted(size6+1:size7));
+            pred8N = sum(predicted(size7+1:size8));
+            pred9N = sum(predicted(size8+1:size9));
+
+            predN = [pred0N,pred1N,pred2N,pred3N,pred4N,pred5N,pred6N,pred7N,pred8N,pred9N];
+
+            yN = (y-1)*-1;
+
+            truePositive = sum(pred.*y');
+            trueNegative = sum(predN.*yN');
+            falsePositive = sum(pred.*yN');
+            falseNegative = sum(predN.*y');
+            thisacc = (truePositive+trueNegative)/(truePositive+trueNegative+falsePositive+falseNegative);
+            accuracy = [accuracy; thisacc];
+        end
+        accC = [accC accuracy];
+        cmC = cat(3,cmC,ConfusionMatrix);
+    end
+    accMC = mean(accC);
+    [bestAccC,indxC] = max(accMC);
+    bestC = C(indxC);
+    fprintf('Best C value training linear SVM with %d instances per class is %1.2f\n',numInstances,bestC);
+    bestCM = cat(3,bestCM,cmC(:,:,indxC));
+    bestAcc = [bestAcc bestAccC];
+end
+
+
+%% SVM-RBF
+accCL = [];
+cmCL = [];
+C = [0.01 0.1 1 2 4];
+L = [0.1 1 3];
+numInstances = 100;
+X = getXTrain(numInstances,train0,train1,train2,train3,train4,train5,train6,train7,train8,train9);
+for lambda=L
+    for c=C
+        accuracy = [];
+        ConfusionMatrix = [];
+        for number=0:9
+            y = zeros(10,1);
+            y(number+1) = 1;
+            Y = kron(y,ones(numInstances,1));
+            Y = double(Y);
+
+            SVMStruct = svmtrain(X,Y,'boxconstraint',c,'kernel_function','rbf','rbf_sigma',lambda);
+
+            XTest = [test0;test1;test2;test3;test4;test5;test6;test7;test8;test9];
+            XTest = double(XTest);
+
+            size0 = size(test0,1);
+            size1 = size(test1,1)+size0;
+            size2 = size(test2,1)+size1;
+            size3 = size(test3,1)+size2;
+            size4 = size(test4,1)+size3;
+            size5 = size(test5,1)+size4;
+            size6 = size(test6,1)+size5;
+            size7 = size(test7,1)+size6;
+            size8 = size(test8,1)+size7;
+            size9 = size(test9,1)+size8;
+
+            predicted = svmclassify(SVMStruct, XTest, 'ShowPlot', true);
+
+            pred0 = sum(predicted(1:size0));
+            pred1 = sum(predicted(size0+1:size1));
+            pred2 = sum(predicted(size1+1:size2));
+            pred3 = sum(predicted(size2+1:size3));
+            pred4 = sum(predicted(size3+1:size4));
+            pred5 = sum(predicted(size4+1:size5));
+            pred6 = sum(predicted(size5+1:size6));
+            pred7 = sum(predicted(size6+1:size7));
+            pred8 = sum(predicted(size7+1:size8));
+            pred9 = sum(predicted(size8+1:size9));
+
+            pred = [pred0,pred1,pred2,pred3,pred4,pred5,pred6,pred7,pred8,pred9];
+            ConfusionMatrix = [ConfusionMatrix; pred];
+
+            predicted = (predicted-1)*-1;
+
+            pred0N = sum(predicted(1:size0));
+            pred1N = sum(predicted(size0+1:size1));
+            pred2N = sum(predicted(size1+1:size2));
+            pred3N = sum(predicted(size2+1:size3));
+            pred4N = sum(predicted(size3+1:size4));
+            pred5N = sum(predicted(size4+1:size5));
+            pred6N = sum(predicted(size5+1:size6));
+            pred7N = sum(predicted(size6+1:size7));
+            pred8N = sum(predicted(size7+1:size8));
+            pred9N = sum(predicted(size8+1:size9));
+
+            predN = [pred0N,pred1N,pred2N,pred3N,pred4N,pred5N,pred6N,pred7N,pred8N,pred9N];
+
+            yN = (y-1)*-1;
+
+            truePositive = sum(pred.*y');
+            trueNegative = sum(predN.*yN');
+            falsePositive = sum(pred.*yN');
+            falseNegative = sum(predN.*y');
+            thisacc = (truePositive+trueNegative)/(truePositive+trueNegative+falsePositive+falseNegative);
+            accuracy = [accuracy; thisacc];
+        end
+        accCL = [accC accuracy];
+        cmCL = cat(3,cmC,ConfusionMatrix);
+    end
+end
+[bestAccCL,indxCL] = max(mean(accCL));
+indxL = floor(indxCL-1/5)+1;
+indxC = mod(indxCL-1,5)+1;
+bestC = C(indxC);
+bestL = L(indxL);
+
+fprintf('____SVM-RBF____\nBest C: %1.2f \nBest lambda: %1.1f \nAcc: %1.4f \n',bestC,bestL,bestAccCL);
+
+bestAcc = [bestAcc bestAccCL];
+bestCM = cat(3,bestCM,cmCL(:,:,indxCL));
+s=0;
+
