@@ -16,7 +16,7 @@ time=clock;
 % Choose the category here
 category = 'person';
 
-data_root = [config.DATA_DIR '/' category];
+data_root = ['/' config.DATA_DIR '/' category];
 
 disp(['Running on ' category]);
 
@@ -49,7 +49,7 @@ if ~enable_bigq || faster_detection
    disp('*******************************************************');
 end
 
-im1.image_file{1}=[data_root '/test.jpg'];
+im1.image_file{1}=[data_root '/douglas.jpg'];
 img = imread(im1.image_file{1});
 
 [bounds_predictions,poselet_hits,torso_predictions]=detect_objects_in_image(img,model,config);

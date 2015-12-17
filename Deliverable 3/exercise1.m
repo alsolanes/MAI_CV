@@ -13,8 +13,8 @@ encoding = 'bovw' ;
 %encoding = 'fv' ;
 
 %category = 'motorbike' ;
-category = 'aeroplane' ;
-%category = 'person' ;
+%category = 'aeroplane' ;
+category = 'person' ;
 
 pos = load(['data/' category '_train_' encoding '.mat']) ;
 neg = load(['data/background_train_' encoding '.mat']) ;
@@ -35,8 +35,8 @@ clear pos neg ;
 
 % For stage G: throw away part of the training data
 % fraction = .1 ;
- fraction = .5 ;
-%fraction = +inf ;
+% fraction = .5 ;
+fraction = +inf ;
 
 sel = vl_colsubset(1:numel(labels), fraction, 'uniform') ;
 names = names(sel) ;
